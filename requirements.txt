@@ -5,3 +5,6 @@ torch
 pydantic
 scikit-learn
 python-dotenv
+requests
+groq
+google-generativeai
