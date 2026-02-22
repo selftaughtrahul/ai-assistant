@@ -10,7 +10,7 @@ app = FastAPI(
     redoc_url="/redoc"
 )
 
-app.include_router(chat.router,prefix="api/v1")
+app.include_router(chat.router,prefix="/api/v1")
 
 
 @app.get("/health")
