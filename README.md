@@ -45,6 +45,8 @@ graph TD;
 
 ## 🚀 Features at a Glance
 
+![Chatbot UI Dashboard](docs/image.png)
+
 *   **Interactive Streamlit Dashboard:** Complete frontend interface (`app.py`) allowing users to:
     - **Toggle LLMs:** Choose dynamically between **Groq (Meta LLaMA 3)**, **Google Gemini**, and **Hugging Face (Remote)** backends via a sleek sidebar dropdown.
     - **View Active Mock Data:** Seamlessly inspect internal `company_data.db` schemas straight from the UI. It contains live mocking tabs for **Orders**, **Demands**, **Projects**, and **Resources** so you can easily craft prompts targeting real test-data!
