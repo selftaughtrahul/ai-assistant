@@ -158,13 +158,15 @@ class BotReplyGenerator:
         system_prompt += "\n\n[SYSTEM INFO] Processing standard refund queries. Inform the user they can return items within 30 days."
         return system_prompt
 
-    def _call_llm(self, system_prompt: str, user_text: str, context_history: list) -> str:
+    def _call_llm(self, system_prompt: str, user_text: str, context_history: list, provider_override: str = None) -> str:
         full_prompt = f"{system_prompt}\n\nChat History:\n"
         full_prompt += "\n".join([f"{msg['role'].capitalize()}: {msg['content']}" for msg in context_history])
         full_prompt += f"\n\nUser: {user_text}\nAssistant:"
 
+        active_provider = provider_override if provider_override else self.provider
+
         try:
-            if self.provider == "groq":
+            if active_provider == "groq":
                 from groq import Groq
                 client = Groq(api_key=config.GROQ_API_KEY)
                 model = config.GROQ_MODEL 
@@ -180,7 +182,7 @@ class BotReplyGenerator:
                 )
                 return response.choices[0].message.content
                 
-            elif self.provider == "gemini":
+            elif active_provider == "gemini":
                 from google import genai
                 client = genai.Client(api_key=config.GEMINI_API_KEY)
                 model = config.GEMINI_MODEL
@@ -195,7 +197,7 @@ class BotReplyGenerator:
                 )
                 return response.text
                 
-            elif self.provider == "huggingface" or self.provider == "local_transformers":
+            elif active_provider in ["huggingface", "local_transformers"]:
                 import requests
                 API_URL = f"https://api-inference.huggingface.co/models/{config.HF_MODEL}"
                 headers = {"Authorization": f"Bearer {config.HF_API_KEY}"}
@@ -215,7 +217,7 @@ class BotReplyGenerator:
             print(f"Reply Generation Error: {e}")
             return None
 
-    def generate_reply(self, intent: str, user_text: str, context_history: list) -> str:
+    def generate_reply(self, intent: str, user_text: str, context_history: list, provider: str = None) -> str:
         system_prompt = (
             f"You are a helpful customer support agent. "
             f"The user's query has been classified as the intent: {intent}. "
@@ -224,7 +226,7 @@ class BotReplyGenerator:
         
         system_prompt = self._inject_dynamic_data(intent, system_prompt, user_text, context_history)
         
-        reply = self._call_llm(system_prompt, user_text, context_history)
+        reply = self._call_llm(system_prompt, user_text, context_history, provider_override=provider)
         
         if reply is None:
             return self.fallback_responses.get(intent, "I'm sorry, I didn't quite catch that. How can I help you?")

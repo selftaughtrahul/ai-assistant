@@ -14,9 +14,12 @@ memory = ChatMemory()
 fallback = FallbackHandler()
 bot_reply_gen = BotReplyGenerator()
 
+from typing import Optional
+
 class ChatRequest(BaseModel):
     session_id: str
     text: str
+    provider: Optional[str] = None
 
 class ChatResponse(BaseModel):
     reply: str
@@ -48,7 +51,7 @@ async def chat_endpoint(request: ChatRequest):
         )
     # 4. Generate Standard AI Response using active LLM
     context = memory.get_context(request.session_id)
-    reply_text = bot_reply_gen.generate_reply(intent, request.text, context)
+    reply_text = bot_reply_gen.generate_reply(intent, request.text, context, provider=request.provider)
     
     # 5. Update Memory (Assistant turn)
     memory.add_message(request.session_id, "assistant", reply_text)
