@@ -45,12 +45,11 @@ graph TD;
 
 ## 🚀 Features at a Glance
 
+*   **Interactive Streamlit Dashboard:** Complete frontend interface (`app.py`) allowing users to:
+    - **Toggle LLMs:** Choose dynamically between **Groq (Meta LLaMA 3)**, **Google Gemini**, and **Hugging Face (Remote)** backends via a sleek sidebar dropdown.
+    - **View Active Mock Data:** Seamlessly inspect internal `company_data.db` schemas straight from the UI. It contains live mocking tabs for **Orders**, **Demands**, **Projects**, and **Resources** so you can easily craft prompts targeting real test-data!
 *   **Database Integrated Generators:** Chatbot parses regular user strings, figures out what order or demand the user is asking about, queries `sqlite3` natively across thousands of mock operations, and builds a comprehensive system prompt injected into the LLM logic on-the-fly (`BotReplyGenerator`).
 *   **Safe Intent Thresholds:** The underlying local Huggingface pipeline acts as an intermediary supervisor. If an LLM or user text input goes completely out of domain, the Bot instantly isolates the request and locks it into human-moderator routing before executing malicious actions.
-*   **Multi-Provider UI Configurations:** Seamless UI toggling natively in the **Streamlit Dashboard sidebar**! Choose dynamically between different backends on-the-fly:
-    - **Groq (Meta LLaMA 3)**: Super-fast inference.
-    - **Google Gemini**: Robust handling of complex generative reasoning.
-    - **Hugging Face (Remote)**: Scalable inference APIs representing custom instruction-tuned bots.
 
 ## 🔧 Setup Instructions
 
