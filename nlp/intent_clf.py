@@ -6,7 +6,7 @@ from pathlib import Path
 sys.path.append(str(Path(__file__).parent.parent))
 from core.config import config
 
-INTENTS = ["Greeting", "Track_Order", "Refund", "Human_Agent_Request", "Unknown"]
+INTENTS = ["Greeting", "Track_Order", "Track_Demand", "Project_Status", "Resource_Availability", "Update_Order_Status", "Update_Demand_Status", "Refund", "Human_Agent_Request", "Unknown"]
 
 class IntentClassifier:
     def __init__(self, provider=None, model_name=None, intents=INTENTS):
