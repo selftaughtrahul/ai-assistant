@@ -32,6 +32,8 @@ async def chat_endpoint(request: ChatRequest):
     intent = prediction["intent"]
     confidence = prediction["confidence"]
     
+    print(f"[DEBUG] Intent: {intent}, Confidence: {confidence}")
+    
     # 3. Check for Fallback
     if fallback.should_fallback(request.text, intent, confidence):
         context = memory.get_context(request.session_id)

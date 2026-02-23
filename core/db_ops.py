@@ -89,6 +89,7 @@ def update_order_status(order_id: str, new_status: str):
     try:
         conn = sqlite3.connect("company_data.db")
         cursor = conn.cursor()
+        print(f"Updating order {order_id} to status {new_status}")
         cursor.execute("UPDATE orders SET status = ? WHERE order_id = ?", (new_status.capitalize(), order_id.upper()))
         conn.commit()
         updated = cursor.rowcount > 0

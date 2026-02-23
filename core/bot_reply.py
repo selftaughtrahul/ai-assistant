@@ -25,15 +25,19 @@ class BotReplyGenerator:
             "Refund": "I can help you with a refund. What is the reason for the return?",
         }
 
-    def _inject_dynamic_data(self, intent: str, system_prompt: str, user_text: str) -> str:
+    def _inject_dynamic_data(self, intent: str, system_prompt: str, user_text: str, context_history: list) -> str:
         """
         Dynamically calls the corresponding handler method for the intent if it exists.
         To add a new intent condition, simply add a new method named `_handle_{intent.lower()}`.
         """
         method_name = f"_handle_{intent.lower()}"
         handler = getattr(self, method_name, None)
+        
         if handler:
-            return handler(system_prompt, user_text)
+            # Concat the previous user messages with current input to capture context if missing from current turn
+            search_text = " ".join([msg["content"] for msg in context_history if msg["role"] == "user"]) + " " + user_text
+            return handler(system_prompt, search_text)
+            
         return system_prompt
 
     def _handle_track_order(self, system_prompt: str, user_text: str) -> str:
@@ -218,7 +222,7 @@ class BotReplyGenerator:
             f"Answer the user's question politely and concisely."
         )
         
-        system_prompt = self._inject_dynamic_data(intent, system_prompt, user_text)
+        system_prompt = self._inject_dynamic_data(intent, system_prompt, user_text, context_history)
         
         reply = self._call_llm(system_prompt, user_text, context_history)
         
