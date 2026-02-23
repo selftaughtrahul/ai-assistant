@@ -6,7 +6,7 @@ def test_intent_classifier_initialization():
     clf = IntentClassifier(provider="local_transformers")
     assert clf.tokenizer is not None
     assert clf.model is not None
-    assert clf.intents == ["Greeting", "Track_Order", "Refund", "Human_Agent_Request", "Unknown"]
+    assert clf.intents == ["Greeting", "Track_Order", "Track_Demand", "Project_Status", "Resource_Availability", "Update_Order_Status", "Update_Demand_Status", "Refund", "Human_Agent_Request", "Unknown"]
 
 def test_intent_classifier_custom_model_and_intents():
     # Test initialization dynamically using a different model and custom intents
