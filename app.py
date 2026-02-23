@@ -95,9 +95,20 @@ if not st.session_state.is_escalated:
         # Send to FastAPI
         with st.spinner("Thinking..."):
             try:
+                # Add LLM provider explicitly to requests payload
+                provider_map = {
+                    "Groq (LLaMA3)": "groq", 
+                    "Google Gemini": "gemini", 
+                    "Hugging Face (Remote)": "huggingface"
+                }
+
                 response = requests.post(
                     API_URL, 
-                    json={"session_id": st.session_state.session_id, "text": user_input}
+                    json={
+                        "session_id": st.session_state.session_id, 
+                        "text": user_input, 
+                        "provider": provider_map.get(st.session_state.get('selected_provider', "Groq (LLaMA3)"))
+                    }
                 )
                 
                 if response.status_code == 200:
@@ -124,9 +135,46 @@ else:
     
 # Sidebar info for debugging
 with st.sidebar:
+    st.subheader("Model Selection")
+    st.selectbox(
+        "Choose an LLM Backend", 
+        ["Groq (LLaMA3)", "Google Gemini", "Hugging Face (Remote)"], 
+        key="selected_provider", 
+        help="Select which provider the bot's generator should use under the hood."
+    )
+    
+    st.markdown("---")
     st.subheader("Session Info")
     st.write(f"**Session ID:** `{st.session_state.session_id}`")
     st.write(f"**Status:** `{'Human Escalation' if st.session_state.is_escalated else 'Active AI'}`")
     if st.button("Restart Chat"):
         st.session_state.clear()
         st.rerun()
+        
+    st.markdown("---")
+    st.subheader("Internal Database Access")
+    st.write("Below is the mock data the system can automatically read & update:")
+    
+    import sqlite3
+    import pandas as pd
+    
+    def fetch_table(table_name):
+        conn = sqlite3.connect("company_data.db")
+        df = pd.read_sql_query(f"SELECT * FROM {table_name}", conn)
+        conn.close()
+        return df
+        
+    try:
+        tab1, tab2, tab3, tab4 = st.tabs(["Orders", "Demands", "Projects", "Resources"])
+        
+        with tab1:
+             st.dataframe(fetch_table("orders"), use_container_width=True)
+        with tab2:
+             st.dataframe(fetch_table("demands"), use_container_width=True)
+        with tab3:
+             st.dataframe(fetch_table("projects"), use_container_width=True)
+        with tab4:
+             st.dataframe(fetch_table("resources"), use_container_width=True)
+             
+    except Exception as e:
+        st.error(f"Cannot load database: {e}")
