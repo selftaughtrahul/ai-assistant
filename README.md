@@ -47,7 +47,10 @@ graph TD;
 
 *   **Database Integrated Generators:** Chatbot parses regular user strings, figures out what order or demand the user is asking about, queries `sqlite3` natively across thousands of mock operations, and builds a comprehensive system prompt injected into the LLM logic on-the-fly (`BotReplyGenerator`).
 *   **Safe Intent Thresholds:** The underlying local Huggingface pipeline acts as an intermediary supervisor. If an LLM or user text input goes completely out of domain, the Bot instantly isolates the request and locks it into human-moderator routing before executing malicious actions.
-*   **Multi-Provider Configurations:** Seamless `.env` toggling between lightning-fast Local `DistilBERT` classifiers routing generative queries out to `groq-llama3`, `gemini-api`, or internal huggingface models. 
+*   **Multi-Provider UI Configurations:** Seamless UI toggling natively in the **Streamlit Dashboard sidebar**! Choose dynamically between different backends on-the-fly:
+    - **Groq (Meta LLaMA 3)**: Super-fast inference.
+    - **Google Gemini**: Robust handling of complex generative reasoning.
+    - **Hugging Face (Remote)**: Scalable inference APIs representing custom instruction-tuned bots.
 
 ## 🔧 Setup Instructions
 
